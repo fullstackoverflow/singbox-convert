@@ -1,0 +1,11 @@
+{
+  "listen": "127.0.0.1",
+  "port": 18901,
+  "path": "/94c7a46d-1b86-45e1-9a2a-1de6841fc6b4",
+  "templatePath": "./template.json",
+  "upstreams": [
+    "https://example.com/subscription-a.json"
+  ],
+  "refreshIntervalSec": 300
+}
+

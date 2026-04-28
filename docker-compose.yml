@@ -1,0 +1,13 @@
+services:
+  convert:
+    build: .
+    image: ghcr.io/fullstackoverflow/singbox-convert:local
+    container_name: convert-service
+    restart: unless-stopped
+    ports:
+      - "18900:18900"
+    environment:
+      - CONFIG_PATH=/app/service.json
+    volumes:
+      - ./service.example.json:/app/service.json:ro
+      - ./template.json:/app/template.json:ro
