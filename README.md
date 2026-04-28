@@ -1,57 +1,59 @@
-# convert service
+# convert-service
 
-Minimal subscription aggregation service:
+Merge multiple sing-box subscriptions into one JSON endpoint.
 
-- Input: one or more upstream subscription URLs (JSON)
-- Output: one local subscription URL (sing-box config JSON)
+## What it does
 
-## Files
+- Pulls one or more upstream subscription URLs
+- Extracts/merges node outbounds
+- Injects them into your `template.json`
+- Exposes a local subscription URL via HTTP
+
+## Project layout
 
 - `service.ts`: entrypoint
-- `service/`: runtime + parser + config builder modules
-- `template.json`: config skeleton template
-- `service.example.json`: service config example
+- `service/`: runtime, fetch/merge, config builder
+- `template.json`: public skeleton template
+- `service.example.json`: sample runtime config
 
-## Quick start
+## Local run
 
-1. Create config:
+1. Copy config:
 
 ```bash
-cp ./service.example.json ./service.json
+cp service.example.json service.json
 ```
 
 2. Edit `service.json`:
 
-- `templatePath`: your local skeleton/template file path
-- `upstreams`: one or more subscription URLs
+- `listen`
+- `port`
+- `path`
+- `templatePath`
+- `upstreams`
+- `refreshIntervalSec`
 
-3. Run:
+3. Start:
 
 ```bash
 npm run serve -- ./service.json
 ```
 
-4. Use local subscription URL:
-
-```text
-http://127.0.0.1:18900/sub
-```
-
 ## Endpoints
 
-- `GET /sub` subscription output (path configurable)
-- `GET /healthz` health status
-- `POST /refresh` force refresh
+- `GET {path}`: generated subscription JSON
+- `GET /healthz`: health info
+- `POST /refresh`: force refresh
 
 ## Docker
 
-Build:
+Build image:
 
 ```bash
 docker build -t convert-service:local .
 ```
 
-Run:
+Run container:
 
 ```bash
 docker run --rm -p 18900:18900 \
@@ -61,17 +63,17 @@ docker run --rm -p 18900:18900 \
   convert-service:local
 ```
 
-Or use compose:
+Or compose:
 
 ```bash
 docker compose up -d --build
 ```
 
-## GitHub Actions and release
+## CI / Release
 
 - CI: `.github/workflows/ci.yml`
-  - Runs `npm ci` and `npm run build` on push/PR.
+  - Runs `npm ci` + `npm run build` on push/PR
 - Release: `.github/workflows/release.yml`
-  - Triggered by pushing tags like `v1.0.0`.
-  - Builds and pushes image to `ghcr.io/<your-org-or-user>/convert-service`.
-  - Creates a GitHub Release and uploads a source tarball.
+  - Triggered by tags like `v1.0.0`
+  - Builds/pushes image to GHCR
+  - Creates GitHub Release with source tarball
