@@ -8,4 +8,3 @@ export type ServiceConfig = {
   upstreams: string[]
   refreshIntervalSec?: number
 }
-

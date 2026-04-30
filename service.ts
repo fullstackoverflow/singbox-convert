@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises'
-import type { AnyObj, ServiceConfig } from './service/types.js'
+import type { ServiceConfig } from './service/types.js'
 import { startService } from './service/runtime.js'
 
 function usage(): never {
@@ -33,8 +33,7 @@ async function main() {
     throw new Error('templatePath and non-empty upstreams[] are required')
   }
 
-  const template = JSON.parse(await readFile(cfg.templatePath, 'utf8')) as AnyObj
-  await startService(cfg, template)
+  await startService(cfg)
 }
 
 main().catch((err: unknown) => {
